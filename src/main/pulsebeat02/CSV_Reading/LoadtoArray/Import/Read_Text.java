@@ -44,7 +44,11 @@ public class Read_Text {
                 
                 for (int z = 0; z < CSVline.length; z++) { // Loop through each element of CSVline
                 	
-                	line[z] = Integer.parseInt(CSVline[z]); // Turn the string number into a double
+                	if (!CSVline[z].isEmpty()) {
+                		
+                		line[z] = Double.parseDouble(CSVline[z]); // Turn the string number into a double 
+                		
+                	}
                 	
                 }
                 

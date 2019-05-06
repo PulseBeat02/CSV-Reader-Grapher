@@ -2,6 +2,8 @@ package main.pulsebeat02.Graphing;
 
 import java.awt.Container;
 import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -19,14 +21,14 @@ public class Graph_GUI extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private final int WIDTH = 1200;
-    private final int HEIGHT = 800;
+	private final int WIDTH = 1200; // Width for Window
+    private final int HEIGHT = 800; // Height for Window
   
-    private Container drawable;
+    private Container drawable; // Container
   
-    private static Graphics2D canvas;
+    private static Graphics2D canvas; // Canvas
   
-    public Graph_GUI (JPanel canvas, File file) {
+    public Graph_GUI (JPanel canvas, File file) { // GUI
   	
       super("CSV Graph");
       
@@ -38,55 +40,86 @@ public class Graph_GUI extends JFrame {
       
     }
     
-    public static double[][] getValues (File file) {
+    public static double[][] getValues (File file) { // Get Values of CSV File
 	
 		return Read_Text.getDoublesCSV(file);
 	
 	}
 
-	public static String[] getTitles (File file) {
+	public static String[] getTitles (File file) { // Get Titles of CSV File
 	
 		return Read_Title.getTitles(file);
 	
 	}
 	
 	@Deprecated
-	public static void drawPoint (Graphics2D canvas, int xCoord, int yCoord, int XArc, int YArc) {
+	public static void drawPointCoords (Graphics2D canvas, int xCoord, int yCoord, int XArc, int YArc) { // Deprecated
 	
 		canvas.drawOval(XArc, YArc, xCoord, yCoord);
 	
 	}
-
-	public static void drawLine (Graphics2D canvas, int x1, int y1, int x2, int y2) {
 	
+	public static void drawPoint (Graphics2D canvas, Point point) { // Draws Point
+		
+		Ellipse2D.Double shape = new Ellipse2D.Double(point.x, point.y, point.Ysize, point.Xsize);
+		canvas.draw(shape);
+		
+		// canvas.drawOval(point.x, point.y, point.Ysize, point.Xsize);
+		
+	}
+	
+	@Deprecated
+	public static void drawLineCoords (Graphics2D canvas, int x1, int y1, int x2, int y2) { // Deprecated
+		
 		canvas.drawLine(x1, y1, x2, y2);
 	
 	}
 	
-	public static void drawGraph(File file) {
+	public static void drawLinePoints (Graphics2D canvas, Point point, Point point2) { // Draws Line
 		
-		double [][] values = getValues(file);
+		canvas.draw(new Line2D.Double(point.x, point.y, point2.x, point2.y));
+		
+	}
+	
+	public static void drawGraph(File file) { // Draw a Graph
+		
+		double[][] values = getValues(file);   
 		String [] titles = getTitles(file);
 		
-		ArrayList<Point> Points = new ArrayList<Point>();
+		ArrayList<Point> Points = new ArrayList<Point>(); // Define ArrayList of Points
 
-		for (int i = 0; i < values.length; i++) {
+		for (int i = 0; i < values.length - 1; i++) {
 			
 			for (int z = 0; z < values[0].length; z++) {
 				
-				double [] currentPoint = {values[i][z], values[i + 1][z]};
+				// double [] currentPoint = {values[i][z], values[i + 1][z]};
 				
-				// drawPoint(canvas, (int)currentPoint[0], (int)currentPoint[1], 5, 5); Better Alternative is to use Point Class
+				Point currentPoint = new Point(values[i][z], values[i + 1][z], 5, 5); // Make current point
+				Points.add(currentPoint); // Add it to ArrayList
 				
-				if (points >= 1) {
+				// drawPointCoords(canvas, (int)currentPoint[0], (int)currentPoint[1], 5, 5); Better Alternative is to use Point Class
+				
+				if (Points.size() >= 1) {
 					
-					// Work on later.
+					drawLinePoints (canvas, currentPoint, Points.get(Points.indexOf(currentPoint) - 1));
 					
 				}
 				
 			}
 			
 		}
+		
+		for (int c = 0; c < Points.size(); c++) {
+			
+			drawPoint(canvas, Points.get(c));
+			
+		}
+		
+	}
+	
+	public static void main(String[] args, File file) {
+		
+		drawGraph(file);
 		
 	}
 				

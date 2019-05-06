@@ -2,16 +2,16 @@ package main.pulsebeat02.Graphing;
 
 public class Point { // Point class used in ArrayList
 	
-	int x;
-	int y;
+	double x;
+	double y;
 	
-	int Xsize;
-	int Ysize;
+	double Xsize;
+	double Ysize;
 	
-	Point (int _x, int _y, int _Xsize, int _Ysize) {
+	Point (double values, double values2, double _Xsize, double _Ysize) {
 		
-		this.x = _x;
-		this.y = _y;
+		this.x = values;
+		this.y = values2;
 		this.Xsize = _Xsize;
 		this.Ysize = _Ysize;
 		
