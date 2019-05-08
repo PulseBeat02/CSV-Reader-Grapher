@@ -1,6 +1,6 @@
 package main.pulsebeat02.Graphing;
 
-import java.awt.Container;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -24,19 +24,18 @@ public class Graph_GUI extends JFrame {
 	private final int WIDTH = 1200; // Width for Window
     private final int HEIGHT = 800; // Height for Window
   
-    private Container drawable; // Container
+    static Graphics2D canvasOriginal; // Canvas
+    
+    static Graphics canvas = (Graphics) canvasOriginal;
   
-    private static Graphics2D canvas; // Canvas
-  
-    public Graph_GUI (JPanel canvas, File file) { // GUI
+    public Graph_GUI (JPanel panel, JFrame window) { // GUI
   	
       super("CSV Graph");
+
+      panel.paint(canvas);
       
-      drawable = getContentPane();
-      
-      drawable.add(canvas);
-      
-      setSize(WIDTH, HEIGHT);
+      window.add(panel);
+      window.setSize(WIDTH, HEIGHT);
       
     }
     
@@ -53,38 +52,39 @@ public class Graph_GUI extends JFrame {
 	}
 	
 	@Deprecated
-	public static void drawPointCoords (Graphics2D canvas, int xCoord, int yCoord, int XArc, int YArc) { // Deprecated
+	public static void drawPointCoords (Graphics canvas, int xCoord, int yCoord, int XArc, int YArc) { // Deprecated
 	
 		canvas.drawOval(XArc, YArc, xCoord, yCoord);
 	
 	}
 	
-	public static void drawPoint (Graphics2D canvas, Point point) { // Draws Point
+	public static void drawPoint (Graphics canvas, Point point) { // Draws Point
 		
 		Ellipse2D.Double shape = new Ellipse2D.Double(point.x, point.y, point.Ysize, point.Xsize);
-		canvas.draw(shape);
+		((Graphics2D) canvas).draw(shape);
 		
 		// canvas.drawOval(point.x, point.y, point.Ysize, point.Xsize);
 		
 	}
 	
 	@Deprecated
-	public static void drawLineCoords (Graphics2D canvas, int x1, int y1, int x2, int y2) { // Deprecated
+	public static void drawLineCoords (Graphics canvas, int x1, int y1, int x2, int y2) { // Deprecated
 		
 		canvas.drawLine(x1, y1, x2, y2);
 	
 	}
 	
-	public static void drawLinePoints (Graphics2D canvas, Point point, Point point2) { // Draws Line
+	public static void drawLinePoints (Graphics canvas, Point point, Point point2) { // Draws Line
 		
-		canvas.draw(new Line2D.Double(point.x, point.y, point2.x, point2.y));
+		((Graphics2D) canvas).draw(new Line2D.Double(point.x, point.y, point2.x, point2.y));
 		
 	}
 	
 	public static void drawGraph(File file) { // Draw a Graph
 		
-		double[][] values = getValues(file);   
-		String [] titles = getTitles(file);
+		double[][] values = getValues(file);  
+		
+		// String [] titles = getTitles(file);
 		
 		ArrayList<Point> Points = new ArrayList<Point>(); // Define ArrayList of Points
 
@@ -99,7 +99,7 @@ public class Graph_GUI extends JFrame {
 				
 				// drawPointCoords(canvas, (int)currentPoint[0], (int)currentPoint[1], 5, 5); Better Alternative is to use Point Class
 				
-				if (Points.size() >= 1) {
+				if (Points.size() >= 2) {
 					
 					drawLinePoints (canvas, currentPoint, Points.get(Points.indexOf(currentPoint) - 1));
 					
@@ -116,6 +116,7 @@ public class Graph_GUI extends JFrame {
 		}
 		
 	}
+	
 	
 	public static void main(String[] args, File file) {
 		

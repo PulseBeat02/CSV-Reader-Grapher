@@ -9,72 +9,82 @@ import java.util.Scanner;
 
 public class Read_Text {
 	
-	public static double[][] getDoublesCSV(File file) {
+	static int currentRow = -1;
+	
+	public static double[][] getDoublesCSV (File file) {
 		
 		int rows = 0; // Number of Rows
-		
-		Scanner scanner = null; // File Scanner
 
+		Scanner scanner = null;
+		
 		try {
 			
-			rows = (int) getRows(file); // Rows must be Integer
+			scanner = new Scanner(file);
 			
-		} catch (IOException e1) {
+		} catch (FileNotFoundException e1) {
 			
 			// TODO Auto-generated catch block
 			
 			e1.printStackTrace();
 			
-		}
+		} // File Scanner
 		
-		double [][] values = new double [Read_Title.getTitles(file).length][rows]; // Make double array from CSV file
+		int numbersCount = charCountinString(scanner.nextLine(), ',') + 1;
+
+		rows = (int) getRows(file); // Rows must be Integer
+		
+		// int tempLineLength = scanner.nextLine().replace(',',' ').split(" ").length;
+		
+		double [][] values = new double [rows][numbersCount]; // Make double array from CSV file
 		
 		try {
-
-            scanner = new Scanner(file); // Properly initialize Scanner
-            scanner.nextLine(); // Skip First Line because it contains titles
+       
+//            scanner.nextLine(); // Skip First Line because it contains titles
             
             while (scanner.hasNextLine()) { // Loops till the end of the file
             	
-                String [] CSVline = scanner.nextLine().replace(',',' ').split(""); // Gets Each Element in the current CSV line
-                
-                int currentRow = 0; // Current Row of Looping
+            	currentRow++;
+            	
+                String [] CSVline = scanner.nextLine().replace(',',' ').split(" "); // Gets Each Element in the current CSV line
                 
                 double [] line = new double [CSVline.length]; // Make double array
                 
                 for (int z = 0; z < CSVline.length; z++) { // Loop through each element of CSVline
-                	
-                	if (!CSVline[z].isEmpty()) {
                 		
                 		line[z] = Double.parseDouble(CSVline[z]); // Turn the string number into a double 
-                		
-                	}
                 	
                 }
-                
-                for (int i = 0; i < values.length; i++) { // Loop through the finalized values array
+
+                for (int i = 0; i < values[0].length; i++) { // Loop through the finalized values array 
                 	
-                	line[i] = values[i][currentRow]; // Add the current line array values to the original 2d Values array
-                	currentRow++;
+                	values[currentRow][i] = line[i]; // Add the current line array values to the original 2d Values array
+                	
+//                	if (i % currentRow == 2) {
+//                		
+//                		currentRow++;
+//                		
+//                	}
                 	
                 }
                 
                 
             }
             
-        } catch (FileNotFoundException e) { // If file not found...
-        	
-            e.printStackTrace();
-            
         }
 		
-		scanner.close(); // Close Scanner
+		finally {
+			
+			scanner.close(); // Close Scanner
+			
+		}
+		
+		
 		
 		return values;
 		
 	}
 	
-	public static double getRows (File file) throws IOException { // Returns the number of rows in a file
+	public static double getRows (File file) { // Returns the number of rows in a file
 		
 	    LineNumberReader reader = null;
 	    
@@ -94,12 +104,41 @@ public class Read_Text {
 	    	
 	        if (reader != null) { // When reached the end of the file
 	        	
-	            reader.close(); // Close reader
+	            try {
+	            	
+					reader.close();
+					
+				} catch (IOException e) {
+					
+					// TODO Auto-generated catch block
+					
+					e.printStackTrace();
+					
+				} // Close reader
 	            
 	        }
 	        
 	    }
 	    
+	}
+	
+	public static int charCountinString (String str, char c) {
+		
+		int charCount = 0;
+		
+		for (int i = 0; i < str.length(); i++) {
+		    
+		    if (str.charAt(i) == c) {
+		    	
+		    	charCount++;
+		    	
+		    }
+		    
+		    
+		}
+		
+		return charCount;
+		
 	}
 
 }
